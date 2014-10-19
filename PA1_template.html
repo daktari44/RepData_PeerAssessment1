@@ -217,7 +217,7 @@ hr {
 
 <h2>Analysis and Discussion</h2>
 
-<p>An exploratory data analysis was done using the R programming language. Data manipulation was done with the assitance of the &#39;dplyr&#39; packagea. The plots were generating using the base graph and lattice graphing package.</p>
+<p>An exploratory data analysis was done using the R programming language. Data manipulation was done with the assitance of the &#39;dplyr&#39; packagea. The plots were generating using the base graph and lattice graphing package. Intermediate datasets were created as needed and removed when no longer required.</p>
 
 <h3>Q1. Loading and pre-processing the data</h3>
 
@@ -301,11 +301,25 @@ summary(stepsperday)
 
 <p><img src="figure/histogram%20of%20total%20number%20of%20steps%20taken%20each%20day%20(original%20dataset" alt="plot of chunk histogram of total number of steps taken each day (original dataset)"/>-1.png) </p>
 
-<p>and the mean and median of the total number of steps calculated to confirm their consistency with those generated from the use of the summary() function.</p>
+<p>and the mean of the total number of steps,  </p>
 
 <pre><code class="r">meansteps &lt;- round(with(stepsperday, mean(total_steps, na.rm = TRUE)), 0)
-mediansteps &lt;- round(with(stepsperday, median(total_steps, na.rm = TRUE)), 0)
-rm(stepsperday)
+print(meansteps)
+</code></pre>
+
+<pre><code>## [1] 10766
+</code></pre>
+
+<p>and median of the total number of steps calculated to confirm their consistency with those generated from the use of the summary() function.</p>
+
+<pre><code class="r">mediansteps &lt;- round(with(stepsperday, median(total_steps, na.rm = TRUE)), 0)
+print(mediansteps)
+</code></pre>
+
+<pre><code>## [1] 10765
+</code></pre>
+
+<pre><code class="r">rm(stepsperday)
 </code></pre>
 
 <p>The mean(<strong>1.0766 &times; 10<sup>4</sup></strong>) and the median (<strong>1.0765 &times; 10<sup>4</sup></strong>) are essentially the same, which when taken with the distribution seen in the histogram, shows that the total number of steps taken per day appears to be normally distributed (i.e. a symmetric distribution largely centered around the mean). </p>
@@ -374,38 +388,9 @@ print(missing)
 <pre><code class="r">newactivity &lt;- merge(activity, avedailyact, by.activity = &quot;interval&quot;, by.data3 = &quot;interval&quot;)
 newactivity &lt;- arrange(newactivity, date, interval)
 rm(avedailyact, activity)
-str(newactivity)
 </code></pre>
 
-<pre><code>## &#39;data.frame&#39;:    17568 obs. of  4 variables:
-##  $ interval : num  0 5 10 15 20 25 30 35 40 45 ...
-##  $ steps    : num  NA NA NA NA NA NA NA NA NA NA ...
-##  $ date     : POSIXct, format: &quot;2012-10-01&quot; &quot;2012-10-01&quot; ...
-##  $ ave_steps: num  1.717 0.3396 0.1321 0.1509 0.0755 ...
-</code></pre>
-
-<pre><code class="r">summary(newactivity)
-</code></pre>
-
-<pre><code>##     interval          steps             date                    
-##  Min.   :   0.0   Min.   :  0.00   Min.   :2012-10-01 00:00:00  
-##  1st Qu.: 588.8   1st Qu.:  0.00   1st Qu.:2012-10-16 00:00:00  
-##  Median :1177.5   Median :  0.00   Median :2012-10-31 00:00:00  
-##  Mean   :1177.5   Mean   : 37.38   Mean   :2012-10-31 00:25:34  
-##  3rd Qu.:1766.2   3rd Qu.: 12.00   3rd Qu.:2012-11-15 00:00:00  
-##  Max.   :2355.0   Max.   :806.00   Max.   :2012-11-30 00:00:00  
-##                   NA&#39;s   :2304                                  
-##    ave_steps      
-##  Min.   :  0.000  
-##  1st Qu.:  2.486  
-##  Median : 34.113  
-##  Mean   : 37.383  
-##  3rd Qu.: 52.835  
-##  Max.   :206.170  
-## 
-</code></pre>
-
-<p>The missing values in the new dataset were then replaced as described in the strategy outlined above, the.</p>
+<p>The missing values in the new dataset were then replaced as described in the strategy outlined above, and the attributes, </p>
 
 <pre><code class="r">for(i in 1:length(newactivity$steps)){
       if(is.na(newactivity$steps[i])== TRUE){
@@ -420,6 +405,8 @@ str(newactivity)
 ##  $ date     : POSIXct, format: &quot;2012-10-01&quot; &quot;2012-10-01&quot; ...
 ##  $ ave_steps: num  1.717 0.3396 0.1321 0.1509 0.0755 ...
 </code></pre>
+
+<p>and the summary statistics were computed to assess the completeness of the new dataset.</p>
 
 <pre><code class="r">summary(newactivity)
 </code></pre>
@@ -453,7 +440,7 @@ with(totalsteps_day, hist(total_steps, col = &quot;blue&quot;,
 
 <p><img src="data:image/png;base64,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" alt="plot of chunk total steps histogram for updated dataset"/> </p>
 
-<p>the mean and median total number of steps taken per day calculated.</p>
+<p>the mean total number of steps taken per day,</p>
 
 <pre><code class="r">meansteps2 &lt;- round(with(totalsteps_day, mean(total_steps, na.rm = TRUE)), 0)
 print(meansteps2)
@@ -461,6 +448,8 @@ print(meansteps2)
 
 <pre><code>## [1] 10766
 </code></pre>
+
+<p>and median total number of steps taken per day calculated from the new dataset.</p>
 
 <pre><code class="r">mediansteps2 &lt;- round(with(totalsteps_day, median(total_steps, na.rm = TRUE)), 0)
 print(mediansteps2)
@@ -478,7 +467,7 @@ print(mediansteps2)
 
 <p>To respond to this question, we were asked use the updated dataset (from Q4) to create a new factor variable in the dataset with two levels - &ldquo;weekday&rdquo; and &ldquo;weekend&rdquo; indicating whether a given date is a weekday or weekend day and Make a panel plot containing a time series plot of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all weekday days or weekend days (y-axis).</p>
 
-<p>The dplyr package was used to create the new variable and to incorporate it into the updated dataset,</p>
+<p>The dplyr package was used to create the new variable and to incorporate it into the updated dataset, and its attributes, </p>
 
 <pre><code class="r">finalactivity &lt;- newactivity%&gt;%
       mutate(day = weekdays(date))
@@ -491,7 +480,6 @@ for(i in 1:length(finalactivity$day)){
 }
 
 finalactivity$day2 &lt;- as.factor(finalactivity$day2)
-
 str(finalactivity)
 </code></pre>
 
@@ -503,6 +491,8 @@ str(finalactivity)
 ##  $ day      : chr  &quot;Monday&quot; &quot;Monday&quot; &quot;Monday&quot; &quot;Monday&quot; ...
 ##  $ day2     : Factor w/ 2 levels &quot;weekday&quot;,&quot;weekend&quot;: 1 1 1 1 1 1 1 1 1 1 ...
 </code></pre>
+
+<p>and summary statistics computed.</p>
 
 <pre><code class="r">summary(finalactivity)
 </code></pre>
@@ -526,7 +516,7 @@ str(finalactivity)
 <pre><code class="r">rm(newactivity, i)
 </code></pre>
 
-<p>and finally, the lattice package used to create the panel plot containing a time series plot and the average number of steps taken, averaged across all weekday days or weekend days was generated.</p>
+<p>Finally, the lattice package used to create the panel plot containing a time series plot and the average number of steps taken, averaged across all weekday days or weekend days was generated.</p>
 
 <pre><code class="r">xyplot(ave_steps~interval|day2, data = finalactivity, layout = c(1, 2),
        ylim = 1:220, xlim = 0:2500, type = &quot;l&quot;,

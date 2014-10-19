@@ -15,7 +15,7 @@ The data analysis was conducted using a pre-processed dataset downloaded from th
 - interval _(identity variable)_ : Identifier for the 5-minute interval in which measurement was taken  
 
 ## Analysis and Discussion
-An exploratory data analysis was done using the R programming language. Data manipulation was done with the assitance of the 'dplyr' packagea. The plots were generating using the base graph and lattice graphing package.
+An exploratory data analysis was done using the R programming language. Data manipulation was done with the assitance of the 'dplyr' packagea. The plots were generating using the base graph and lattice graphing package. Intermediate datasets were created as needed and removed when no longer required.
 
 ### Q1. Loading and pre-processing the data
 After loading the required R packages,
@@ -68,10 +68,16 @@ with(stepsperday, hist(total_steps, col = "red",
      xlab = "total steps taken per day"))
 ```
 
-and the mean and median of the total number of steps calculated to confirm their consistency with those generated from the use of the summary() function.
-```{r mean and median of the total number of steps per day}
+and the mean of the total number of steps,  
+```{r mean of the total number of steps per day}
 meansteps <- round(with(stepsperday, mean(total_steps, na.rm = TRUE)), 0)
+print(meansteps)
+```
+
+and median of the total number of steps calculated to confirm their consistency with those generated from the use of the summary() function.
+```{r median of the total number of steps per day}
 mediansteps <- round(with(stepsperday, median(total_steps, na.rm = TRUE)), 0)
+print(mediansteps)
 rm(stepsperday)
 ```
 
@@ -99,7 +105,7 @@ intervalmax <- with(avedailyact, subset(avedailyact, ave_steps == max(ave_steps)
 print(intervalmax)
 ```
 
-The **`r intervalmax[1]`** interval had the maximum number of steps on average across all the days in the dataset.
+The **`r intervalmax$interval[1]`** interval had the maximum number of steps on average across all the days in the dataset.
 
 ### Q4. Imputing missing values
 #### Determining number of rows with missing values
@@ -116,17 +122,19 @@ To replace the missing values in the dataset, I decided to use the average numbe
 newactivity <- merge(activity, avedailyact, by.activity = "interval", by.data3 = "interval")
 newactivity <- arrange(newactivity, date, interval)
 rm(avedailyact, activity)
-str(newactivity)
-summary(newactivity)
 ```
 
-The missing values in the new dataset were then replaced as described in the strategy outlined above, the.
+The missing values in the new dataset were then replaced as described in the strategy outlined above, and the attributes, 
 ```{r Replacing the missing values in the updated dataset}
 for(i in 1:length(newactivity$steps)){
       if(is.na(newactivity$steps[i])== TRUE){
           newactivity$steps[i] = newactivity$ave_steps[i]
       }}
 str(newactivity)
+```
+
+and the summary statistics were computed to assess the completeness of the new dataset.
+```{r Summary statistics for updated dataset}
 summary(newactivity)
 ```
 
@@ -141,10 +149,14 @@ with(totalsteps_day, hist(total_steps, col = "blue",
      xlab = "total steps taken per day"))
 ```
 
-the mean and median total number of steps taken per day calculated.
+the mean total number of steps taken per day,
 ```{r}
 meansteps2 <- round(with(totalsteps_day, mean(total_steps, na.rm = TRUE)), 0)
 print(meansteps2)
+```
+
+and median total number of steps taken per day calculated from the new dataset.
+```{r}
 mediansteps2 <- round(with(totalsteps_day, median(total_steps, na.rm = TRUE)), 0)
 print(mediansteps2)
 rm(totalsteps_day)
@@ -155,7 +167,7 @@ There is no difference between the mean(**`r meansteps`**) and the median (**`r 
 ### Q5. Are there differences in activity patterns between weekdays and weekends?
 To respond to this question, we were asked use the updated dataset (from Q4) to create a new factor variable in the dataset with two levels - "weekday" and "weekend" indicating whether a given date is a weekday or weekend day and Make a panel plot containing a time series plot of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all weekday days or weekend days (y-axis).
 
-The dplyr package was used to create the new variable and to incorporate it into the updated dataset,
+The dplyr package was used to create the new variable and to incorporate it into the updated dataset, and its attributes, 
 ```{r creating new factor variable for weekdays and weekends}
 finalactivity <- newactivity%>%
       mutate(day = weekdays(date))
@@ -168,13 +180,16 @@ for(i in 1:length(finalactivity$day)){
 }
 
 finalactivity$day2 <- as.factor(finalactivity$day2)
-
 str(finalactivity)
+```
+
+and summary statistics computed.
+```{r summary statistics for final dataset}
 summary(finalactivity)
 rm(newactivity, i)
 ```
 
-and finally, the lattice package used to create the panel plot containing a time series plot and the average number of steps taken, averaged across all weekday days or weekend days was generated.
+Finally, the lattice package used to create the panel plot containing a time series plot and the average number of steps taken, averaged across all weekday days or weekend days was generated.
 ```{r panel plot of time series plot}
 xyplot(ave_steps~interval|day2, data = finalactivity, layout = c(1, 2),
        ylim = 1:220, xlim = 0:2500, type = "l",

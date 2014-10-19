@@ -15,7 +15,7 @@ The data analysis was conducted using a pre-processed dataset downloaded from th
 - interval _(identity variable)_ : Identifier for the 5-minute interval in which measurement was taken  
 
 ## Analysis and Discussion
-An exploratory data analysis was done using the R programming language. Data manipulation was done with the assitance of the 'dplyr' packagea. The plots were generating using the base graph and lattice graphing package.
+An exploratory data analysis was done using the R programming language. Data manipulation was done with the assitance of the 'dplyr' packagea. The plots were generating using the base graph and lattice graphing package. Intermediate datasets were created as needed and removed when no longer required.
 
 ### Q1. Loading and pre-processing the data
 After loading the required R packages,
@@ -106,11 +106,29 @@ with(stepsperday, hist(total_steps, col = "red",
 
 ![plot of chunk histogram of total number of steps taken each day (original dataset)](figure/histogram of total number of steps taken each day (original dataset)-1.png) 
 
-and the mean and median of the total number of steps calculated to confirm their consistency with those generated from the use of the summary() function.
+and the mean of the total number of steps,  
 
 ```r
 meansteps <- round(with(stepsperday, mean(total_steps, na.rm = TRUE)), 0)
+print(meansteps)
+```
+
+```
+## [1] 10766
+```
+
+and median of the total number of steps calculated to confirm their consistency with those generated from the use of the summary() function.
+
+```r
 mediansteps <- round(with(stepsperday, median(total_steps, na.rm = TRUE)), 0)
+print(mediansteps)
+```
+
+```
+## [1] 10765
+```
+
+```r
 rm(stepsperday)
 ```
 
@@ -183,41 +201,9 @@ To replace the missing values in the dataset, I decided to use the average numbe
 newactivity <- merge(activity, avedailyact, by.activity = "interval", by.data3 = "interval")
 newactivity <- arrange(newactivity, date, interval)
 rm(avedailyact, activity)
-str(newactivity)
 ```
 
-```
-## 'data.frame':	17568 obs. of  4 variables:
-##  $ interval : num  0 5 10 15 20 25 30 35 40 45 ...
-##  $ steps    : num  NA NA NA NA NA NA NA NA NA NA ...
-##  $ date     : POSIXct, format: "2012-10-01" "2012-10-01" ...
-##  $ ave_steps: num  1.717 0.3396 0.1321 0.1509 0.0755 ...
-```
-
-```r
-summary(newactivity)
-```
-
-```
-##     interval          steps             date                    
-##  Min.   :   0.0   Min.   :  0.00   Min.   :2012-10-01 00:00:00  
-##  1st Qu.: 588.8   1st Qu.:  0.00   1st Qu.:2012-10-16 00:00:00  
-##  Median :1177.5   Median :  0.00   Median :2012-10-31 00:00:00  
-##  Mean   :1177.5   Mean   : 37.38   Mean   :2012-10-31 00:25:34  
-##  3rd Qu.:1766.2   3rd Qu.: 12.00   3rd Qu.:2012-11-15 00:00:00  
-##  Max.   :2355.0   Max.   :806.00   Max.   :2012-11-30 00:00:00  
-##                   NA's   :2304                                  
-##    ave_steps      
-##  Min.   :  0.000  
-##  1st Qu.:  2.486  
-##  Median : 34.113  
-##  Mean   : 37.383  
-##  3rd Qu.: 52.835  
-##  Max.   :206.170  
-## 
-```
-
-The missing values in the new dataset were then replaced as described in the strategy outlined above, the.
+The missing values in the new dataset were then replaced as described in the strategy outlined above, and the attributes, 
 
 ```r
 for(i in 1:length(newactivity$steps)){
@@ -234,6 +220,8 @@ str(newactivity)
 ##  $ date     : POSIXct, format: "2012-10-01" "2012-10-01" ...
 ##  $ ave_steps: num  1.717 0.3396 0.1321 0.1509 0.0755 ...
 ```
+
+and the summary statistics were computed to assess the completeness of the new dataset.
 
 ```r
 summary(newactivity)
@@ -270,7 +258,7 @@ with(totalsteps_day, hist(total_steps, col = "blue",
 
 ![plot of chunk total steps histogram for updated dataset](figure/total steps histogram for updated dataset-1.png) 
 
-the mean and median total number of steps taken per day calculated.
+the mean total number of steps taken per day,
 
 ```r
 meansteps2 <- round(with(totalsteps_day, mean(total_steps, na.rm = TRUE)), 0)
@@ -280,6 +268,8 @@ print(meansteps2)
 ```
 ## [1] 10766
 ```
+
+and median total number of steps taken per day calculated from the new dataset.
 
 ```r
 mediansteps2 <- round(with(totalsteps_day, median(total_steps, na.rm = TRUE)), 0)
@@ -299,7 +289,7 @@ There is no difference between the mean(**1.0766 &times; 10<sup>4</sup>**) and t
 ### Q5. Are there differences in activity patterns between weekdays and weekends?
 To respond to this question, we were asked use the updated dataset (from Q4) to create a new factor variable in the dataset with two levels - "weekday" and "weekend" indicating whether a given date is a weekday or weekend day and Make a panel plot containing a time series plot of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all weekday days or weekend days (y-axis).
 
-The dplyr package was used to create the new variable and to incorporate it into the updated dataset,
+The dplyr package was used to create the new variable and to incorporate it into the updated dataset, and its attributes, 
 
 ```r
 finalactivity <- newactivity%>%
@@ -313,7 +303,6 @@ for(i in 1:length(finalactivity$day)){
 }
 
 finalactivity$day2 <- as.factor(finalactivity$day2)
-
 str(finalactivity)
 ```
 
@@ -326,6 +315,8 @@ str(finalactivity)
 ##  $ day      : chr  "Monday" "Monday" "Monday" "Monday" ...
 ##  $ day2     : Factor w/ 2 levels "weekday","weekend": 1 1 1 1 1 1 1 1 1 1 ...
 ```
+
+and summary statistics computed.
 
 ```r
 summary(finalactivity)
@@ -352,7 +343,7 @@ summary(finalactivity)
 rm(newactivity, i)
 ```
 
-and finally, the lattice package used to create the panel plot containing a time series plot and the average number of steps taken, averaged across all weekday days or weekend days was generated.
+Finally, the lattice package used to create the panel plot containing a time series plot and the average number of steps taken, averaged across all weekday days or weekend days was generated.
 
 ```r
 xyplot(ave_steps~interval|day2, data = finalactivity, layout = c(1, 2),

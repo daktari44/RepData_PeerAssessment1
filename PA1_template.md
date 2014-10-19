@@ -132,7 +132,7 @@ print(mediansteps)
 rm(stepsperday)
 ```
 
-The mean(**1.0766 &times; 10<sup>4</sup>**) and the median (**1.0765 &times; 10<sup>4</sup>**) are essentially the same, which when taken with the distribution seen in the histogram, shows that the total number of steps taken per day appears to be normally distributed (i.e. a symmetric distribution largely centered around the mean). 
+The mean(**10766**) and the median (**10765**) are essentially the same, which when taken with the distribution seen in the histogram, shows that the total number of steps taken per day appears to be normally distributed (i.e. a symmetric distribution largely centered around the mean). 
 
 ### Q3. What is the average daily activity pattern?
 To respond to this question, we were asked to create a time series plot of the 5-minute interval (x-axis)
@@ -284,7 +284,7 @@ print(mediansteps2)
 rm(totalsteps_day)
 ```
 
-There is no difference between the mean(**1.0766 &times; 10<sup>4</sup>**) and the median (**1.0765 &times; 10<sup>4</sup>**) total number of steps taken each day in the original dataset, and The mean(**1.0766 &times; 10<sup>4</sup>**) and the median (**1.0766 &times; 10<sup>4</sup>**) taken each day in this updated dataset, therefore we can conclude that imputing missing values using the strategy we outlined has no impact on the calculation of the mean and median values.
+There is no difference between the mean(**10766**) and the median (**10765**) total number of steps taken each day in the original dataset, and The mean(**10766**) and the median (**10766**) taken each day in this updated dataset, therefore we can conclude that imputing missing values using the strategy we outlined has no impact on the calculation of the mean and median values.
 
 ### Q5. Are there differences in activity patterns between weekdays and weekends?
 To respond to this question, we were asked use the updated dataset (from Q4) to create a new factor variable in the dataset with two levels - "weekday" and "weekend" indicating whether a given date is a weekday or weekend day and Make a panel plot containing a time series plot of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all weekday days or weekend days (y-axis).
